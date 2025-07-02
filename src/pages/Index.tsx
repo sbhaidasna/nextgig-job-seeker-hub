@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { SearchForm, SearchFilters } from "@/components/SearchForm";
 import { JobCard } from "@/components/JobCard";
+import { JobSourceForm } from "@/components/JobSourceForm";
+import { JobSourcesList } from "@/components/JobSourcesList";
 import { mockJobs } from "@/data/mockJobs";
 import heroImage from "@/assets/hero-bg.jpg";
+import { Button } from "@/components/ui/button";
+import { Plus, Search as SearchIcon } from "lucide-react";
 
 const Index = () => {
   const [searchResults, setSearchResults] = useState(mockJobs);
   const [hasSearched, setHasSearched] = useState(false);
+  const [showSourceManagement, setShowSourceManagement] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleSearch = (filters: SearchFilters) => {
     // Filter jobs based on search criteria
@@ -30,6 +36,11 @@ const Index = () => {
 
     setSearchResults(filtered);
     setHasSearched(true);
+    setShowSourceManagement(false);
+  };
+
+  const handleSourceAdded = () => {
+    setRefreshTrigger(prev => prev + 1);
   };
 
   return (
@@ -44,9 +55,36 @@ const Index = () => {
               </div>
               <h1 className="text-2xl font-bold text-foreground">NextGig</h1>
             </div>
-            <p className="text-sm text-muted-foreground hidden md:block">
-              Your unified job search portal
-            </p>
+            <div className="flex items-center gap-4">
+              <p className="text-sm text-muted-foreground hidden md:block">
+                Your unified job search portal
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setShowSourceManagement(!showSourceManagement);
+                    setHasSearched(false);
+                  }}
+                  className="hidden md:flex"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Manage Sources
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setShowSourceManagement(false);
+                    setHasSearched(false);
+                  }}
+                >
+                  <SearchIcon className="w-4 h-4 mr-2" />
+                  Search Jobs
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -73,8 +111,31 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Source Management Section */}
+      {showSourceManagement && (
+        <section className="py-12 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto space-y-8">
+              <div className="text-center">
+                <h3 className="text-3xl font-bold text-foreground mb-4">
+                  Manage Job Sources
+                </h3>
+                <p className="text-lg text-muted-foreground">
+                  Add company career pages and job boards to customize your job search sources.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <JobSourceForm onSourceAdded={handleSourceAdded} />
+                <JobSourcesList refreshTrigger={refreshTrigger} />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Results Section */}
-      {hasSearched && (
+      {hasSearched && !showSourceManagement && (
         <section className="py-12 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-8">
@@ -115,7 +176,7 @@ const Index = () => {
       )}
 
       {/* Features Section */}
-      {!hasSearched && (
+      {!hasSearched && !showSourceManagement && (
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
