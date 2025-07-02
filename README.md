@@ -1,6 +1,11 @@
 # Welcome to your Lovable project
 
-## Project info
+## Checkout the 1-pager for this AI Prototype here:
+**URL**: https://github.com/sbhaidasna/NextGig/blob/main/README.md
+
+
+
+## Lovable Project info
 
 **URL**: https://lovable.dev/projects/bff76766-3707-40bc-ad44-6cf9bd86ccbc
 
